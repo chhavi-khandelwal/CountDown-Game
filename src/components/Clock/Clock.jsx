@@ -21,7 +21,7 @@ class Clock extends React.Component {
   }
 
   componentWillUnmount() { // delete the interval just before component is removed
-    this.stopClockAndGame('FAIL')
+    this.stopClockAndGame('FAIL');
   }
 
   stopClockAndGame = (status) => {
@@ -52,7 +52,7 @@ class Clock extends React.Component {
       const counter = this.counter;
       const timeString = (this.counter > 9 ? '0:' : '0:0') + this.counter;
 
-      if (counter > clockTimer) {
+      if (counter >= clockTimer) {
         this.stopClockAndGame('FAIL');
       }
       this.setState({ time: timeString  });

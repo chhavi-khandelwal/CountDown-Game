@@ -3,16 +3,15 @@ import  { wordService } from '../../services/wordService';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Gameboard from '../Gameboard/Gameboard';
-import  { GameStatus } from '../../enums/GameStatus.js';
-
-const JumbledWordLength = 9;
+import  { GameStatus } from '../../enums/GameStatus';
+import  { JumbledWordLength } from '../../enums/constants';
 
 class Game extends React.Component {
   constructor(props) {
     super(props);
     this.validWord = wordService.getValidWord();
     this.jumbledWord = wordService.getJumbledWord(this.validWord, JumbledWordLength);
-    //useState
+
     this.state = {
       gameStatus: GameStatus.STARTED
     };
