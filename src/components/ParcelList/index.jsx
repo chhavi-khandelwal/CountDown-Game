@@ -1,8 +1,8 @@
 import React from 'react';
-import './wordList.scss';
-import Pick from '../Pick/Pick';
+import './parcelList.scss';
+import Parcel from '../Parcel';
 
-const WordList = props => {
+const ParcelList = props => {
   const list = props.droppedLetters;
   const { onDrop, decideDrop } = props;
 
@@ -10,16 +10,16 @@ const WordList = props => {
     <ul className="droppable-list">
       {
         list.map((item, index) =>
-          <Pick
+          <Parcel
             item={ item }
             onDrop = { () => onDrop(item.name, index) }
             decideDrop = { () => decideDrop(index) }
             key={ index }>
-            </Pick>
+          </Parcel>
         )
       }
     </ul>
   )
 }
 
-export default WordList;
+export default ParcelList;

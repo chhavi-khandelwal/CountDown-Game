@@ -2,7 +2,7 @@ import React from 'react';
 import  { wordService } from '../../services/wordService';
 import { DndProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import Gameboard from '../Gameboard/Gameboard';
+import Gameboard from '../Gameboard';
 import  { GameStatus } from '../../enums/GameStatus';
 import  { JumbledWordLength } from '../../enums/constants';
 

@@ -4,8 +4,9 @@ export const wordService = {
 
   wordCollection: dictionary,
 
-  getValidWord: function() {
-    const randomIndex = this.getRandomNumber(0, dictionary.length);
+  getValidWord: function(dict) {
+    const dictionaryData = dict || dictionary;
+    const randomIndex = this.getRandomNumber(0, dictionaryData.length);
     return this.wordCollection.splice(randomIndex, 1)[0].toUpperCase();
   },
 

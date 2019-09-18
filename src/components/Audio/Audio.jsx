@@ -15,17 +15,19 @@ const Audio = ({soundStatus, cheerSound, gongSound, tickSound, toggleSound}) => 
       <div className={'icon--sound ' + (soundStatus ? ' enable' : ' disable') } onClick={ toggleSound }></div>
       {soundStatus && (
         <div>
-        <Sound
-          url={ cheer }
-          playStatus={ cheerSound }/>
-    
-        <Sound
-          url={ gong }
-          playStatus={ gongSound }/>
-
-        <Sound
-          url={ clock }
-      playStatus={ tickSound }/></div>)}
+          <Sound
+            url={ cheer }
+            playStatus={ cheerSound }/>
+      
+          <Sound
+            url={ gong }
+            playStatus={ gongSound }/>
+          <Sound
+            url={ clock }
+            playStatus={ tickSound }
+            loop={ true }/>
+        </div>)
+      }
     </div>
   )
 }

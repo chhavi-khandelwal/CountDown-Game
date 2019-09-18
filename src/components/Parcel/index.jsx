@@ -1,9 +1,9 @@
 import React from 'react';
-import './pick.scss';
-import Card from '../Card/Card';
+import './parcel.scss';
+import Card from '../Card';
 import { useDrop } from 'react-dnd';
 
-const Pick = ({item, onDrop, decideDrop}) => {
+const Parcel = ({item, onDrop, decideDrop}) => {
   const drop = useDrop({
     accept: "dragger",
     drop: onDrop,
@@ -23,4 +23,4 @@ const Pick = ({item, onDrop, decideDrop}) => {
   );
 }
 
-export default Pick;
+export default Parcel;

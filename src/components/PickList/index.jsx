@@ -1,8 +1,8 @@
 import React from 'react';
-import './cardList.scss';
-import Alphabet from '../Alphabet/Alphabet';
+import './pickList.scss';
+import Pick from '../Pick';
 
-const CardList = props => {
+const PickList = props => {
   const { collection } = props;
   const collectionString = collection.join('');
 
@@ -11,18 +11,18 @@ const CardList = props => {
     <ul className="draggable-list">
       {
         collection.map((item, index) => 
-          <Alphabet
+          <Pick
             item={ item }
             type="dragger"
             key={ collectionString + '_' + index }
             onDrag={ () => onDrag(item, index) }
             handleDrag={ () => handleDrag(item, index) }
             disableDrag={ disableDrag }>
-          </Alphabet>
+          </Pick>
         )
       }
     </ul>
   )
 }
 
-export default CardList;
+export default PickList;

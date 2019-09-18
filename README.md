@@ -66,3 +66,38 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+Features:
+1. Derive a word from a jumbled collection of 9 letters.
+2. A sound button to toggle the sound effects while playing. Sound effects:
+  - When one fails
+  - When one wins
+  - Clock ticking sound
+3. It is desktop compatible
+
+Hierarchy of components/containers
+
+          App
+           |
+           Dashboard
+              |
+              Game
+                |
+                GameBoard
+                    |
+                  Audio | Notification | PickListContainer | ParcelListContainer | Clock | Result
+                                                |                  |
+                                            PickList             ParcelList
+                                              |                     |
+                                              |________Card_________|
+
+Architecture:
+Assets : This contains images and audio files to be played for the game
+Components: All the folders of react components used in the game
+Each folder contains a jsx file for rendering and a scss file for styling + test files for testing the functionality of the game.
+Containers: ********************************
+Services: this contains service files like WordService which creates and manages the words picked for a frame in the Game.
+styles: contains all the common scss files which defines mixins, variables, etc to be used by the components scss files.
+
+DataStorage: contains dictionary which contains collection of words to be served to Wordservice

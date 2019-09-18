@@ -1,9 +1,10 @@
 import React from 'react';
-import './alphabet.scss';
-import Card from '../Card/Card';
+import './pick.scss';
+import Card from '../Card';
 import { useDrag } from 'react-dnd';
 
-const Alphabet = ({ item, type, onDrag, handleDrag, disableDrag }) => {
+const Pick = props => {
+  const { item, type, onDrag, handleDrag, disableDrag } = props;
   const canDrag = handleDrag();
 
   function checkDraggable (monitor) {
@@ -35,4 +36,4 @@ const Alphabet = ({ item, type, onDrag, handleDrag, disableDrag }) => {
   )
 };
 
-export default Alphabet;
+export default Pick;

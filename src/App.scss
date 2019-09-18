@@ -7,5 +7,6 @@ html, body, #root {
 
 body {
   background: url(./assets/images/alphabetic-bg.png) 0 0 no-repeat;
-  background-size: 150%;
+  background-size: cover;
+  background-color: $color-body-bg;
 }

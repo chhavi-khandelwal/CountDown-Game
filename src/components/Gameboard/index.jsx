@@ -1,10 +1,11 @@
 import React from 'react';
 import './gameboard.scss';
-import Clock from '../Clock/Clock';
-import CardListContainer from '../../containers/CardListContainer/CardListContainer';
-import WordContainer from '../../containers/WordContainer/WordContainer';
-import Result from '../Result/Result';
-import Notification from '../Notification/Notification';
+import Clock from '../Clock';
+import PickListContainer from '../../containers/PickListContainer';
+import ParcelListContainer from '../../containers/ParcelListContainer';
+import Result from '../Result';
+import Notification from '../Notification';
+import ScoreBoard from '../ScoreBoard';
 import Audio from '../Audio/Audio';
 import { GameStatus } from '../../enums/GameStatus.js';
 import { NotificationEnum } from '../../enums/NotificationEnum.js';
@@ -16,6 +17,7 @@ class Gameboard extends React.Component {
     super(props);
     const { validWord, jumbledWord } = this.props;
     
+    this.score = 0;
     this.validWord = validWord;
     this.emptyList = createList(this.validWord.length, delimiter);
     this.jumbledWord = jumbledWord;
@@ -91,6 +93,7 @@ class Gameboard extends React.Component {
       //logic for correct word completion
       const word = droppedLetters.reduce((word, letter) =>  word += (letter.name === delimiter ? '' : letter.name), '');
       if (word.length === this.validWord.length) {
+        this.score++;
         this.props.stopGame(GameStatus.PASS);
         notification = NotificationEnum.SUCCESS;
         this.isWordCorrect = true;
@@ -127,9 +130,9 @@ class Gameboard extends React.Component {
 
   handleDrag = (item, index) => {
     //disable all draggable option and stop clock after max. threshold
-    if (this.wrongAttempt === wrongAttemptThreshold) {
-      return false;
-    }
+    const gameStopped = !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
+    if (gameStopped) { return false; }
+
     const droppedLetters = this.state.droppedLetters;
     for (let i = 0; i < droppedLetters.length; i++) {
       if (droppedLetters[i].from === index) {
@@ -144,46 +147,50 @@ class Gameboard extends React.Component {
     this.setState({ soundStatus: !this.state.soundStatus });
   }
 
+  hasGameStopped = () => {
+    return !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
+  }
+
   render() {
     const { droppedLetters, notification, soundStatus } = this.state;
-    const gameStopped = !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
+    const hasGameStopped = this.hasGameStopped();
 
     return (
       <div className="gameboard">
-        <Audio
-          soundStatus={ soundStatus }
+        <ScoreBoard score={ this.score }
+          wrongAttempts= { this.wrongAttempt }>
+        </ScoreBoard>
+
+        <Audio soundStatus={ soundStatus }
+          tickSound = { !hasGameStopped }
           cheerSound={ this.isWordCorrect }
-          tickSound={ !gameStopped }
-          gongSound={ this.sound.gong }
+          gongSound={ this.wrongAttempt === wrongAttemptThreshold }
           toggleSound={ this.toggleSound }>
         </Audio>
 
         <Notification notification={ notification }></Notification>
 
-        <Clock 
-          isClockTicking={ !gameStopped  }
+        <Clock isClockTicking={ !hasGameStopped  }
           stopGame={ this.props.stopGame }
           gameStatus={ this.props.gameStatus }>
         </Clock>
 
-        <CardListContainer
-          jumbledWord={ this.jumbledWord }
+        <PickListContainer jumbledWord={ this.jumbledWord }
           onDrag={ this.onDrag }
           handleDrag={ this.handleDrag }
-          disableDrag={ gameStopped }>
-        </CardListContainer>
+          disableDrag={ hasGameStopped }>
+        </PickListContainer>
 
-        <WordContainer size={ this.validWord.length }
+        <ParcelListContainer size={ this.validWord.length } 
           onDrop={ this.onDrop }
           droppedLetters={ droppedLetters }
           decideDrop={ this.decideDrop }>
-          </WordContainer>
+        </ParcelListContainer>
 
-          <Result
-            showResult={ gameStopped }
+        {  hasGameStopped && <Result
             resetGame={ this.props.resetGame }
-            isWordCorrect={ this.isWordCorrect }>
-          </Result>
+            isCorrect={ this.isWordCorrect }>
+        </Result>}
       </div>
     );
   }

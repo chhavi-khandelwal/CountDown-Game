@@ -1,0 +1,40 @@
+@import '../../styles/_mixins.scss';
+@import '../../styles/_variables.scss';
+
+.button--primary {
+  @include flex;
+  padding: 12px 32px;
+  border-radius: 40px;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  font-weight: bold;
+  background-color: $color-yellow;
+  cursor: pointer;
+  border: 1px solid $color-yellow;
+  color: $color-text;
+  outline: none;
+  color: $color-white;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: $color-btn-hover;
+  }
+}
+
+.button--success {
+  background-color: $color-green;
+  border: 1px solid $color-green;
+
+  &:hover {
+    background-color: $color-dark-green;
+  }
+}
+
+.button--failure {
+  background-color: $color-red;
+  border: 1px solid $color-red;
+
+  &:hover {
+    background-color: $color-dark-red;
+  }
+}
