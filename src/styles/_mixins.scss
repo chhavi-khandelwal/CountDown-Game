@@ -1,0 +1,60 @@
+@mixin anim-rotate($degree) {
+
+  @keyframes anim-rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate($degree);
+    }
+  }
+}
+
+@mixin anim-fade-in-out($min, $max) {
+  @keyframes fadeInOut {
+    0% {
+      opacity: $min;
+    }
+    
+    50% {
+      opacity: $max;
+    }
+
+    100% {
+      opacity: $min;
+    }
+  }
+}
+
+@mixin anim-fade-in($min, $max) {
+  @keyframes fadeIn {
+    0% {
+      opacity: $min;
+    }
+    
+    100% {
+      opacity: $max;
+    }
+  }
+}
+
+@mixin anim-size-fade-in($hMin, $hMax) {
+  @keyframes sizeFadeIn {
+    0% {
+      opacity: 0;
+      height: $hMin;
+    }
+    
+    100% {
+      opacity: 1;
+      height: $hMax;
+    }
+  }
+}
+
+@mixin flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

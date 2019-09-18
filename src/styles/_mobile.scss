@@ -1,0 +1,18 @@
+@import './mixins.scss';
+
+@media (min-width: 320px) and (max-width: 767px) {
+  .card {
+    width: 50px !important;
+    @include anim-size-fade-in(0, 50px);
+    animation: sizeFadeIn 300ms ease-in !important;
+    padding: 3px !important;
+    margin: 5px !important;
+  }
+
+  .dashboard {
+    padding: 0;
+    .gameboard {
+      border-radius: 0;
+    }
+  }
+}

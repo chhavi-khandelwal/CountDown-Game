@@ -1,0 +1,11 @@
+@import 'styles/_variables.scss';
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+} 
+
+body {
+  background: url(./assets/images/alphabetic-bg.png) 0 0 no-repeat;
+  background-size: 150%;
+}
