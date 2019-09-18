@@ -14,8 +14,8 @@ const WordList = props => {
             item={ item }
             onDrop = { () => onDrop(item.name, index) }
             decideDrop = { () => decideDrop(index) }
-            key={ index }
-            ></Pick>
+            key={ index }>
+            </Pick>
         )
       }
     </ul>

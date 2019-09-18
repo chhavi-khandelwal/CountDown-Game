@@ -3,15 +3,10 @@ import './alphabet.scss';
 import Card from '../Card/Card';
 import { useDrag } from 'react-dnd';
 
-const style = {
-  border: '1px dashed gray',
-  cursor: 'move'
-};
-
 const Alphabet = ({ item, type, onDrag, handleDrag, disableDrag }) => {
   const canDrag = handleDrag();
 
-  function a (monitor) {
+  function checkDraggable (monitor) {
     if (monitor.isDragging()) {
       onDrag();
       return 0.7;
@@ -25,16 +20,19 @@ const Alphabet = ({ item, type, onDrag, handleDrag, disableDrag }) => {
     item: { item, type },
     canDrag: canDrag,
     collect: monitor => ({
-      opacity: a(monitor)
+      opacity: checkDraggable(monitor)
     })
   });
 
-  return (<Card
-            disable={ disableDrag }
-            item={ item }
-            style={{ ...style, opacity }}
-            reference={ drag }>
-          </Card>)
+  return (
+    <Card
+      disable={ disableDrag }
+      item={ item }
+      classes={ ' question-card ' }
+      style={{ opacity }}
+      reference={ drag }>
+    </Card>
+  )
 };
 
 export default Alphabet;

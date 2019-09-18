@@ -4,26 +4,12 @@ import Clock from '../Clock/Clock';
 import CardListContainer from '../../containers/CardListContainer/CardListContainer';
 import WordContainer from '../../containers/WordContainer/WordContainer';
 import Result from '../Result/Result';
-import  { GameStatus } from '../../enums/GameStatus.js';
-import  { NotificationEnum } from '../../enums/NotificationEnum.js';
-// import alarm from '../../assets/audio/alarm-clock.webp';
-import cheer from '../../assets/audio/cheer.mp3';
-import gong from '../../assets/audio/gong.mp3';
-import Sound from 'react-sound';
-
-
-const wrongAttemptThreshold = 3;
-const delimiter = '_';
-
-const createList = (size) => {
-  const emptyList = [];
-
-  if (!size) { return emptyList; }
-  for (let i = 0; i < size; i++) {
-    emptyList.push({name: delimiter});
-  }
-  return emptyList;
-}
+import Notification from '../Notification/Notification';
+import Audio from '../Audio/Audio';
+import { GameStatus } from '../../enums/GameStatus.js';
+import { NotificationEnum } from '../../enums/NotificationEnum.js';
+import { delimiter, wrongAttemptThreshold } from '../../enums/constants';
+import { createList } from '../../services/utils';
 
 class Gameboard extends React.Component {
   constructor(props) {
@@ -31,19 +17,16 @@ class Gameboard extends React.Component {
     const { validWord, jumbledWord } = this.props;
     
     this.validWord = validWord;
+    this.emptyList = createList(this.validWord.length, delimiter);
     this.jumbledWord = jumbledWord;
     this.wrongAttempt = 0;
     this.isWordCorrect = false;
-    this.sound = {
-      cheer: '',
-      gong: '',
-      clock: ''
-    };
+    this.sound = { gong: '' };
 
     this.state = {
       notification: '',
       draggedLetters: [],
-      droppedLetters: createList(this.validWord.length),
+      droppedLetters: createList(this.validWord.length, delimiter),
       lastDraggedItem: {}
     };
   }
@@ -51,15 +34,13 @@ class Gameboard extends React.Component {
   resetGameBoard() {
     this.validWord = this.props.validWord;
     this.jumbledWord = this.props.jumbledWord;
-    console.log(this.validWord)
-
     this.wrongAttempt = 0;
     this.isWordCorrect = false;
     this.resetSoundSystem();
     this.setState({
       notification: '',
       draggedLetters: [],
-      droppedLetters: createList(this.validWord.length),
+      droppedLetters: createList(this.validWord.length, delimiter),
       lastDraggedItem: {}
     });
   }
@@ -76,16 +57,13 @@ class Gameboard extends React.Component {
   }
 
   resetSoundSystem = () => {
-    this.sound.cheer = '';
     this.sound.gong = '';
-    this.sound.alarm = '';
   }
 
   onDrop = (item, to) => {
     this.setState(() => {
       const lastDraggedItem = this.state.lastDraggedItem;
-      let droppedLetters = this.state.droppedLetters;
-      let isCorrect = true, notification = '';
+      let droppedLetters = this.state.droppedLetters, isCorrect = true, notification = '';
 
       if (!lastDraggedItem.name) { return { droppedLetters }; }
 
@@ -111,10 +89,7 @@ class Gameboard extends React.Component {
       }
 
       //logic for correct word completion
-      const word = droppedLetters.reduce((word, letter) =>  {
-        return word += (letter.name === delimiter ? '' : letter.name);
-      }, '');
-      console.log(word)
+      const word = droppedLetters.reduce((word, letter) =>  word += (letter.name === delimiter ? '' : letter.name), '');
       if (word.length === this.validWord.length) {
         this.props.stopGame(GameStatus.PASS);
         notification = NotificationEnum.SUCCESS;
@@ -124,13 +99,8 @@ class Gameboard extends React.Component {
       return { droppedLetters: droppedLetters, notification: notification };
     });
 
-
     if (this.state.notification) {
-      setTimeout(() => {
-        this.setState(() => {
-          return { notification: '' };
-        })
-      }, 2000);
+      setTimeout(() => { this.setState({ notification: '' }); }, 2000);
     }
   }
 
@@ -177,40 +147,29 @@ class Gameboard extends React.Component {
   render() {
     const { droppedLetters, notification, soundStatus } = this.state;
     const gameStopped = !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
-    const cheerSound = this.isWordCorrect ? Sound.status.PLAYING : Sound.status.STOPPED;
-    const gongSound = this.sound.gong ? Sound.status.PLAYING : Sound.status.STOPPED;
 
     return (
       <div className="gameboard">
-        {
-          soundStatus &&
-          <Sound
-            url={ cheer }
-            playStatus={ cheerSound }/>
-        }
-        {
-          soundStatus &&
-          <Sound
-          url={ gong }
-          playStatus={ gongSound }/>
-        }
-        {/* <Sound
-          url={ alarm }
-          playStatus={ alarmClock }/> */}
-        <div className={'icon--sound ' + (soundStatus ? ' enable' : ' disable') } onClick={ this.toggleSound }></div>
-        <div className={ 'notification ' + (notification.length ? 'notification-bar' : '') }>
-          { notification.toUpperCase() }
-        </div>
+        <Audio
+          soundStatus={ soundStatus }
+          cheerSound={ this.isWordCorrect }
+          tickSound={ !gameStopped }
+          gongSound={ this.sound.gong }
+          toggleSound={ this.toggleSound }>
+        </Audio>
+
+        <Notification notification={ notification }></Notification>
+
         <Clock 
           isClockTicking={ !gameStopped  }
           stopGame={ this.props.stopGame }
-          gameStatus= { this.props.gameStatus }>
+          gameStatus={ this.props.gameStatus }>
         </Clock>
 
         <CardListContainer
           jumbledWord={ this.jumbledWord }
-          onDrag= { this.onDrag }
-          handleDrag= { this.handleDrag }
+          onDrag={ this.onDrag }
+          handleDrag={ this.handleDrag }
           disableDrag={ gameStopped }>
         </CardListContainer>
 
@@ -223,7 +182,7 @@ class Gameboard extends React.Component {
           <Result
             showResult={ gameStopped }
             resetGame={ this.props.resetGame }
-            isWordCorrect = { this.isWordCorrect }>
+            isWordCorrect={ this.isWordCorrect }>
           </Result>
       </div>
     );
