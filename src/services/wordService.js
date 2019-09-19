@@ -1,9 +1,9 @@
 import { dictionary } from '../dataStorage/dictionary';
 
 export const wordService = {
-
   wordCollection: dictionary,
 
+  //get unique random word from dictionary
   getValidWord: function(dict) {
     const dictionaryData = dict || dictionary;
     const randomIndex = this.getRandomNumber(0, dictionaryData.length);
@@ -14,6 +14,7 @@ export const wordService = {
     return Math.floor(Math.random() * (+max - +min)) + +min; 
   },
 
+  //create a collection of jumbled letters from valid word
   getJumbledWord: function(validWord, length) {
     const extraCharactersNeeded = length - validWord.length;
     let jumbledCollection = [];
@@ -41,4 +42,3 @@ export const wordService = {
     return arr;
   }
 };
-

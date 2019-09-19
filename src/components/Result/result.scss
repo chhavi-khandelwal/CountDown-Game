@@ -1,6 +1,7 @@
 @import '../../styles/_mixins.scss';
 @import '../../styles/_variables.scss';
 @import '../../styles/_buttons.scss';
+@import '../../styles/_placeholders.scss';
 
 .tick--success  {
   background: url(../../assets/images/tick.svg) 0 0 no-repeat;
@@ -21,7 +22,7 @@
 }
 
 .result-container {
-  @include flex;
+  @extend %flex;
   flex-direction: column;
   @include anim-fade-in(0, 1);
   animation: fadeIn 1s ease-in;

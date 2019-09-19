@@ -1,8 +1,8 @@
-@import '../../styles/_mixins.scss';
 @import '../../styles/_variables.scss';
+@import '../../styles/_placeholders.scss';
 
 .button--primary {
-  @include flex;
+  @extend %flex;
   padding: 12px 32px;
   border-radius: 40px;
   font-size: 1rem;

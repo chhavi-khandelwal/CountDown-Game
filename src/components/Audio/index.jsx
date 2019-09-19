@@ -5,7 +5,9 @@ import clock from '../../assets/audio/clock.mp3';
 import cheer from '../../assets/audio/cheer.mp3';
 import gong from '../../assets/audio/gong.mp3';
 
-const Audio = ({soundStatus, cheerSound, gongSound, tickSound, toggleSound}) => {
+//Currently Adding sounds of tick, gong and cheer with sound icon
+const Audio = props => {
+  let {soundStatus, cheerSound, gongSound, tickSound, toggleSound} = props;
   cheerSound = cheerSound ? Sound.status.PLAYING : Sound.status.STOPPED;
   gongSound = gongSound ? Sound.status.PLAYING : Sound.status.STOPPED;
   tickSound = tickSound ? Sound.status.PLAYING : Sound.status.STOPPED;

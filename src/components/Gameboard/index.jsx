@@ -6,45 +6,37 @@ import ParcelListContainer from '../../containers/ParcelListContainer';
 import Result from '../Result';
 import Notification from '../Notification';
 import ScoreBoard from '../ScoreBoard';
-import Audio from '../Audio/Audio';
-import { GameStatus } from '../../enums/GameStatus.js';
-import { NotificationEnum } from '../../enums/NotificationEnum.js';
+import Audio from '../Audio';
+import { GameStatus } from '../../enums/GameStatus';
+import { NotificationEnum } from '../../enums/NotificationEnum';
 import { delimiter, wrongAttemptThreshold } from '../../enums/constants';
 import { createList } from '../../services/utils';
+
+//This component manages the state of draggedLetters, droppedLetters, notification
+const initialState = {
+  notification: '',
+  draggedLetters: [],
+  lastDraggedItem: {}
+};
 
 class Gameboard extends React.Component {
   constructor(props) {
     super(props);
-    const { validWord, jumbledWord } = this.props;
-    
+    this.reset({ ignoreStateInitializaton: true });
+    this.state = { ...initialState, ...{ droppedLetters: this.emptyList }};
     this.score = 0;
-    this.validWord = validWord;
-    this.emptyList = createList(this.validWord.length, delimiter);
-    this.jumbledWord = jumbledWord;
-    this.wrongAttempt = 0;
-    this.isWordCorrect = false;
-    this.sound = { gong: '' };
-
-    this.state = {
-      notification: '',
-      draggedLetters: [],
-      droppedLetters: createList(this.validWord.length, delimiter),
-      lastDraggedItem: {}
-    };
   }
 
-  resetGameBoard() {
+  reset = (options = {}) => {
     this.validWord = this.props.validWord;
     this.jumbledWord = this.props.jumbledWord;
     this.wrongAttempt = 0;
+    this.gongSound = false;
     this.isWordCorrect = false;
-    this.resetSoundSystem();
-    this.setState({
-      notification: '',
-      draggedLetters: [],
-      droppedLetters: createList(this.validWord.length, delimiter),
-      lastDraggedItem: {}
-    });
+    this.emptyList = createList(this.validWord.length, delimiter);
+    if (!options.ignoreStateInitializaton) {
+      this.setState({ ...initialState, ...{ droppedLetters: this.emptyList }});
+    }
   }
 
   componentDidMount() {
@@ -54,14 +46,16 @@ class Gameboard extends React.Component {
   componentDidUpdate() {
     if (this.props.gameStatus === GameStatus.STARTED) {
       this.props.startGame();
-      this.resetGameBoard();
+      this.reset();
     }
   }
 
-  resetSoundSystem = () => {
-    this.sound.gong = '';
-  }
-
+   /**
+   * callback to dnd library on drop
+   * @param {item} item to drop
+   * @param {to} index to drop on
+   * returns collection of drooped Items|notification state
+   */
   onDrop = (item, to) => {
     this.setState(() => {
       const lastDraggedItem = this.state.lastDraggedItem;
@@ -83,9 +77,9 @@ class Gameboard extends React.Component {
         droppedLetters[currentDroppedLetter.to] = currentDroppedLetter;
       }
 
+      //add third wrong letter to dropped collection to show in the UI with incorrect insertion
       if (this.wrongAttempt === wrongAttemptThreshold) {
         this.props.stopGame(GameStatus.FAIL);
-        this.sound.gong = true;
         this.isWordCorrect = false;
         return { droppedLetters: droppedLetters, notification: NotificationEnum.INCORRECT_THRESHOLD };
       }
@@ -102,12 +96,19 @@ class Gameboard extends React.Component {
       return { droppedLetters: droppedLetters, notification: notification };
     });
 
+    //remove notification after a second
     if (this.state.notification) {
-      setTimeout(() => { this.setState({ notification: '' }); }, 2000);
+      setTimeout(() => { this.setState({ notification: '' }); }, 1000);
     }
   }
 
+  /**
+   * callback to dnd library on drag
+   * @param {item} item to drag
+   * @param {from} index to pick from
+   */
   onDrag = (item, from) => {
+    // start new game: case when wrong attempt threshold is reached
     if (this.props.gameStatus === GameStatus.STARTED) {
       this.props.startGame();
     }
@@ -115,9 +116,16 @@ class Gameboard extends React.Component {
       { lastDraggedItem: { name: item, position: from } });
   }
 
-  decideDrop = (index) => {
+  /**
+   * decide on whether eligible to drop or not
+   * @param {index} to drop on
+   * returns boolean
+   */
+  decideDrop = index => {
+    //dnd api : return true to drop else false
     const droppedLetters = this.state.droppedLetters;
     for (let i = 0; i < droppedLetters.length; i++) {
+      //drop if 
       if (droppedLetters[i].to === index) {
         this.setState({
           lastDraggedItem: {}
@@ -128,26 +136,30 @@ class Gameboard extends React.Component {
     return true;
   }
 
+  /**
+   * dnd api to decide on what happens when dragged
+   * @param {index} to drop on
+   * returns boolean
+   */
   handleDrag = (item, index) => {
     //disable all draggable option and stop clock after max. threshold
-    const gameStopped = !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
+    const gameStopped = this.hasGameStopped();
     if (gameStopped) { return false; }
 
     const droppedLetters = this.state.droppedLetters;
     for (let i = 0; i < droppedLetters.length; i++) {
-      if (droppedLetters[i].from === index) {
-        return false;
-      }
+      if (droppedLetters[i].from === index) { return false; }
     }
     return true;
   }
 
   toggleSound = () => {
-    this.resetSoundSystem();
     this.setState({ soundStatus: !this.state.soundStatus });
   }
 
   hasGameStopped = () => {
+    this.gongSound = true;
+    const gongTime = setTimeout(() => { this.gongSound = false; clearTimeout(gongTime); })
     return !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
   }
 
@@ -158,13 +170,13 @@ class Gameboard extends React.Component {
     return (
       <div className="gameboard">
         <ScoreBoard score={ this.score }
-          wrongAttempts= { this.wrongAttempt }>
+          wrongAttempts={ this.wrongAttempt }>
         </ScoreBoard>
 
         <Audio soundStatus={ soundStatus }
-          tickSound = { !hasGameStopped }
+          tickSound={ !hasGameStopped }
           cheerSound={ this.isWordCorrect }
-          gongSound={ this.wrongAttempt === wrongAttemptThreshold }
+          gongSound={ this.gongSound }
           toggleSound={ this.toggleSound }>
         </Audio>
 
@@ -195,5 +207,4 @@ class Gameboard extends React.Component {
     );
   }
 }
-
 export default Gameboard;

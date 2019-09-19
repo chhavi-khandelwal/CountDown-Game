@@ -4,14 +4,14 @@ import { wrongAttemptThreshold } from '../../enums/constants';
 
 const ScoreBoard = props => {
     const { score, wrongAttempts } = props;
-
-    const getChancesLeft = () => {
+    //attempts left
+    const getAttemptsLeft = () => {
       return wrongAttemptThreshold - wrongAttempts;
     }
 
     return (
       <ul className="score-board">
-        <li className="chances-board">Chances Left: { getChancesLeft() }</li>
+        <li className="chances-board">Chances Left: { getAttemptsLeft() }</li>
         <li>Score: { score }</li>
       </ul>
     );

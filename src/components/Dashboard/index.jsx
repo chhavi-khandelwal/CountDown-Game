@@ -16,8 +16,8 @@ class Dashboard extends React.Component {
     const { startGame } = this.state;
     return (
       <div className="dashboard">
+        <h3 className={ startGame ? ' hang' : '' }>COUNTDOWN BEGINS!</h3>
         <div className={ 'welcome-page ' + (startGame ? ' hide' : '') }>
-          <h3>COUNTDOWN BEGINS!</h3>
           <div>How to play?</div>
           <div className="instructions">
             <p>1. Create the word from 9 alphabets shown on the screen.</p>

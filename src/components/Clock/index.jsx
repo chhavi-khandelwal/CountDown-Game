@@ -3,6 +3,7 @@ import './clock.scss';
 import { GameStatus } from '../../enums/GameStatus';
 import { clockTimer } from '../../enums/constants';
 
+//ticks till clockTimer
 class Clock extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +16,8 @@ class Clock extends React.Component {
     this.setState({ time: '0:00' });
   }
 
-  componentWillUnmount() { // delete the interval just before component is removed
+  componentWillUnmount() { 
+    // delete the interval just before component is removed
     this.stopClockAndGame('FAIL');
   }
 
@@ -39,6 +41,7 @@ class Clock extends React.Component {
     }
   }
 
+  //updates digital and analog clock using setInterval
   updateDigitalTime() {
     if (!this.props.isClockTicking) { return; }
 

@@ -1,27 +1,38 @@
-@import '../../styles/_mixins.scss';
-@import '../../styles/_variables.scss';
-@import '../../styles/_buttons.scss';
-
+@import '../../styles/_placeholders.scss';
 
 .dashboard {
   height: 100%;
-  padding: 20px 8em;
+  padding: 20px 5em;
   font-weight: bold;
+  position: relative;
+
+  h3 {
+    @extend %heading;
+    @extend %flex;
+
+    &.hang {
+      position: absolute;
+      top: 5px;
+      margin: 0 auto;
+      left: 0;
+      right: 0;
+    }
+  }
+
+
 
   .welcome-page {
-    @include flex;
+    @extend %flex;
     justify-content: flex-start;
     flex-direction: column;
     height: 100%;
-    color: $color-white;
-    font-size: 1.8em;
-    font-family: cursive;
-    text-transform: uppercase;
+    @extend %heading;
   }
 
   .instructions {
-    @include flex;
+    @extend %flex;
     flex-direction: column;
+    font-size: 1em;
   }
 
   p {

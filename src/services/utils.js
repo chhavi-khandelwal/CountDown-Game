@@ -1,3 +1,4 @@
+//returns list of delimiter of a given size 
 export const createList = (size, delimiter) => {
   const emptyList = [];
 

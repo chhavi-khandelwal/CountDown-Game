@@ -1,5 +1,6 @@
 @import '../../styles/_mixins.scss';
 @import '../../styles/_variables.scss';
+@import '../../styles/_placeholders.scss';
 
 .notification {
   min-width: 10px;
@@ -8,7 +9,7 @@
   margin-bottom: 20px;
 
   &-bar {
-    @include flex;
+    @extend %flex;
     background-color: $color-yellow;
     color: $color-text;
     font-size: 1.2em;

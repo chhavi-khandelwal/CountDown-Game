@@ -2,18 +2,21 @@ import React from 'react';
 import './pick.scss';
 import Card from '../Card';
 import { useDrag } from 'react-dnd';
+import { cardOpacity } from '../../enums/constants';
 
 const Pick = props => {
   const { item, type, onDrag, handleDrag, disableDrag } = props;
   const canDrag = handleDrag();
 
+
+  //check if draggable: dnd api
   function checkDraggable (monitor) {
     if (monitor.isDragging()) {
       onDrag();
-      return 0.7;
+      return cardOpacity;
     }
     else if (!canDrag) {
-      return 0.7;
+      return cardOpacity;
     }
   }
 

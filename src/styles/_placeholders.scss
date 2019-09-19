@@ -1,0 +1,14 @@
+@import '../../styles/_variables.scss';
+
+%flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+%heading {
+  color: $color-white;
+  font-size: 1.8em;
+  font-family: cursive;
+  text-transform: uppercase;
+}

@@ -3,14 +3,12 @@ import './parcel.scss';
 import Card from '../Card';
 import { useDrop } from 'react-dnd';
 
-const Parcel = ({item, onDrop, decideDrop}) => {
+const Parcel = props => {
+  const { item, onDrop, decideDrop } = props;
+
   const drop = useDrop({
     accept: "dragger",
     drop: onDrop,
-    collect: monitor => ({
-      isOver: monitor.isOver(),
-      canDrop: monitor.canDrop()
-    }),
     hover: () => decideDrop()
   })[1];
 
