@@ -24,11 +24,11 @@ class Gameboard extends React.Component {
     super(props);
     this.reset({ ignoreStateInitializaton: true });
     this.state = { ...initialState, ...{ droppedLetters: this.emptyList }};
-    this.score = 0;
   }
 
   reset = (options = {}) => {
     this.validWord = this.props.validWord;
+    console.log(this.validWord)
     this.jumbledWord = this.props.jumbledWord;
     this.wrongAttempt = 0;
     this.gongSound = false;
@@ -81,13 +81,14 @@ class Gameboard extends React.Component {
       if (this.wrongAttempt === wrongAttemptThreshold) {
         this.props.stopGame(GameStatus.FAIL);
         this.isWordCorrect = false;
+        this.gongSound = true;
         return { droppedLetters: droppedLetters, notification: NotificationEnum.INCORRECT_THRESHOLD };
       }
 
       //logic for correct word completion
       const word = droppedLetters.reduce((word, letter) =>  word += (letter.name === delimiter ? '' : letter.name), '');
       if (word.length === this.validWord.length) {
-        this.score++;
+        this.props.updateScore();
         this.props.stopGame(GameStatus.PASS);
         notification = NotificationEnum.SUCCESS;
         this.isWordCorrect = true;
@@ -154,12 +155,11 @@ class Gameboard extends React.Component {
   }
 
   toggleSound = () => {
+    this.gongSound = false;
     this.setState({ soundStatus: !this.state.soundStatus });
   }
 
   hasGameStopped = () => {
-    this.gongSound = true;
-    const gongTime = setTimeout(() => { this.gongSound = false; clearTimeout(gongTime); })
     return !(this.props.gameStatus === GameStatus.STARTED || this.props.gameStatus === GameStatus.INPROGRESS);
   }
 
@@ -169,7 +169,7 @@ class Gameboard extends React.Component {
 
     return (
       <div className="gameboard">
-        <ScoreBoard score={ this.score }
+        <ScoreBoard score={ this.props.score }
           wrongAttempts={ this.wrongAttempt }>
         </ScoreBoard>
 

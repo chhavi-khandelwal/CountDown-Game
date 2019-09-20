@@ -7,7 +7,8 @@ import  { GameStatus } from '../../enums/GameStatus';
 import  { JumbledWordLength } from '../../enums/constants';
 
 const initialState = {
-  gameStatus: GameStatus.STARTED
+  gameStatus: GameStatus.STARTED,
+  score: 0
 };
 
 class Game extends React.Component {
@@ -21,8 +22,12 @@ class Game extends React.Component {
     this.validWord = wordService.getValidWord();
     this.jumbledWord = wordService.getJumbledWord(this.validWord, JumbledWordLength);
     if (!options.ignoreStateInitializaton) {
-      this.setState(initialState);
+      this.setState({...this.state, ...{ gameStatus: initialState.gameStatus } });
     }
+  }
+
+  updateScore = () => {
+    this.setState({ score: this.state.score + 1 });
   }
 
   startGame = () => {
@@ -34,7 +39,7 @@ class Game extends React.Component {
   }
 
   render() {
-    const { gameStatus } = this.state;
+    const { gameStatus, score } = this.state;
     return (
       <DndProvider backend={ HTML5Backend }>
         {this.props.startGame && <Gameboard
@@ -43,7 +48,9 @@ class Game extends React.Component {
           resetGame={ this.reset }
           gameStatus= { gameStatus }
           startGame={ this.startGame }
-          stopGame={ this.stopGame }>
+          stopGame={ this.stopGame }
+          score={score}
+          updateScore={this.updateScore}>
         </Gameboard>}
       </DndProvider>
     );
