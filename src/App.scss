@@ -9,4 +9,5 @@ body {
   background: url(./assets/images/alphabetic-bg.png) 0 0 no-repeat;
   background-size: cover;
   background-color: $color-body-bg;
+  text-rendering: optimizeLegibility;
 }
