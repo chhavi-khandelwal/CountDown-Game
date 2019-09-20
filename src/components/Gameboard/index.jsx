@@ -8,9 +8,9 @@ import Notification from '../Notification';
 import ScoreBoard from '../ScoreBoard';
 import Audio from '../Audio';
 import { GameStatus } from '../../enums/GameStatus';
-import { NotificationEnum } from '../../enums/NotificationEnum';
-import { delimiter, wrongAttemptThreshold } from '../../enums/constants';
+import { delimiter } from '../../enums/constants';
 import { createList } from '../../services/utils';
+import { dnd } from '../../services/dnd';
 
 //This component manages the state of draggedLetters, droppedLetters, notification
 const initialState = {
@@ -59,44 +59,21 @@ class Gameboard extends React.Component {
   onDrop = (item, to) => {
     this.setState(() => {
       const lastDraggedItem = this.state.lastDraggedItem;
-      let droppedLetters = this.state.droppedLetters, isCorrect = true, notification = '';
-
-      if (!lastDraggedItem.name) { return { droppedLetters }; }
-
-      //logic for wrong attempts
-      if (this.validWord[to] !== lastDraggedItem.name) {
-        this.wrongAttempt++;
-        isCorrect = false;
-        if (this.wrongAttempt < wrongAttemptThreshold) {
-          return { droppedLetters, notification: NotificationEnum.INCORRECT_INSERTION };
-        }
+      let droppedLetters = this.state.droppedLetters, notification = '';
+      const callbacks = {
+        stopGame: this.props.stopGame,
+        updateScore: this.props.updateScore,
+      };
+  
+      const letterConfig = dnd.getDroppedLettersConfig(lastDraggedItem, droppedLetters, to, this.validWord, this.wrongAttempt, callbacks);
+      this.wrongAttempt = letterConfig.wrongAttempt || this.wrongAttempt;
+      this.isWordCorrect = letterConfig.isWordCorrect;
+      this.gongSound = letterConfig.gongSound;
+      return {
+        droppedLetters: letterConfig.droppedLetters || droppedLetters,
+        notification: letterConfig.notification || notification
       }
-
-      const currentDroppedLetter = { name: lastDraggedItem.name, from: lastDraggedItem.position, to , isCorrect };
-      if (!isNaN(currentDroppedLetter.to)) {
-        droppedLetters[currentDroppedLetter.to] = currentDroppedLetter;
-      }
-
-      //add third wrong letter to dropped collection to show in the UI with incorrect insertion
-      if (this.wrongAttempt === wrongAttemptThreshold) {
-        this.props.stopGame(GameStatus.FAIL);
-        this.isWordCorrect = false;
-        this.gongSound = true;
-        return { droppedLetters: droppedLetters, notification: NotificationEnum.INCORRECT_THRESHOLD };
-      }
-
-      //logic for correct word completion
-      const word = droppedLetters.reduce((word, letter) =>  word += (letter.name === delimiter ? '' : letter.name), '');
-      if (word.length === this.validWord.length) {
-        this.props.updateScore();
-        this.props.stopGame(GameStatus.PASS);
-        notification = NotificationEnum.SUCCESS;
-        this.isWordCorrect = true;
-      }
-
-      return { droppedLetters: droppedLetters, notification: notification };
     });
-
     //remove notification after a second
     if (this.state.notification) {
       setTimeout(() => { this.setState({ notification: '' }); }, 1000);
@@ -113,45 +90,29 @@ class Gameboard extends React.Component {
     if (this.props.gameStatus === GameStatus.STARTED) {
       this.props.startGame();
     }
-    this.setState(
-      { lastDraggedItem: { name: item, position: from } });
+    this.setState({ lastDraggedItem: { name: item, position: from } });
   }
 
   /**
    * decide on whether eligible to drop or not
    * @param {index} to drop on
-   * returns boolean
+   * returns { boolean } (true to drop else false)
    */
-  decideDrop = index => {
-    //dnd api : return true to drop else false
-    const droppedLetters = this.state.droppedLetters;
-    for (let i = 0; i < droppedLetters.length; i++) {
-      //drop if 
-      if (droppedLetters[i].to === index) {
-        this.setState({
-          lastDraggedItem: {}
-        });
-        return false;
-      }
-    }
-    return true;
+  decideDrop = dropIndex => {
+    const isDroppable = dnd.isDroppable(this.state.droppedLetters, dropIndex);
+    if (!isDroppable) { this.setState({ lastDraggedItem: {} }); }
+    return isDroppable;
   }
 
   /**
    * dnd api to decide on what happens when dragged
-   * @param {index} to drop on
+   * @param { index } to drop on
    * returns boolean
    */
-  handleDrag = (item, index) => {
+  handleDrag = index => {
     //disable all draggable option and stop clock after max. threshold
-    const gameStopped = this.hasGameStopped();
-    if (gameStopped) { return false; }
-
-    const droppedLetters = this.state.droppedLetters;
-    for (let i = 0; i < droppedLetters.length; i++) {
-      if (droppedLetters[i].from === index) { return false; }
-    }
-    return true;
+    if (this.hasGameStopped()) { return false; }
+    return dnd.isDraggable(this.state.droppedLetters, index);
   }
 
   toggleSound = () => {

@@ -11,8 +11,9 @@
     @extend %flex;
 
     &.hang {
+      font-size: 1.4em;
       position: absolute;
-      top: 5px;
+      top: 10px;
       margin: 0 auto;
       left: 0;
       right: 0;

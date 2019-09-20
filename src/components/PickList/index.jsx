@@ -16,7 +16,7 @@ const PickList = props => {
             type="dragger"
             key={ collectionString + '_' + index }
             onDrag={ () => onDrag(item, index) }
-            handleDrag={ () => handleDrag(item, index) }
+            handleDrag={ () => handleDrag(index) }
             disableDrag={ disableDrag }>
           </Pick>
         )
