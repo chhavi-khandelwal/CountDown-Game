@@ -1,7 +1,12 @@
 {
   "name": "countdown",
   "version": "0.1.0",
-  "private": true,
+  "author": "Chhavi Khandelwal <chhavi.kh09@gmail.com>",
+  "description": "​Countdown​ game build in ReactJs. Play by creating the word from given collection of words by drag and drop.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chhavi-khandelwal/CountDown-Game/"
+  },
   "dependencies": {
     "enzyme-adapter-react-16": "^1.14.0",
     "enzyme-to-json": "^3.4.0",
@@ -35,5 +40,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/chhavi-khandelwal/CountDown-Game/issues"
+  },
+  "homepage": "https://countdownalph.herokuapp.com/"
 }

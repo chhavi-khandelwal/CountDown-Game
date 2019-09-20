@@ -28,7 +28,6 @@ class Gameboard extends React.Component {
 
   reset = (options = {}) => {
     this.validWord = this.props.validWord;
-    console.log(this.validWord)
     this.jumbledWord = this.props.jumbledWord;
     this.wrongAttempt = 0;
     this.gongSound = false;
@@ -58,12 +57,12 @@ class Gameboard extends React.Component {
    */
   onDrop = (item, to) => {
     this.setState(() => {
-      const lastDraggedItem = this.state.lastDraggedItem;
-      let droppedLetters = this.state.droppedLetters, notification = '';
+      const lastDraggedItem = this.state.lastDraggedItem, droppedLetters = this.state.droppedLetters;
       const callbacks = {
         stopGame: this.props.stopGame,
         updateScore: this.props.updateScore,
       };
+      let notification = '';
   
       const letterConfig = dnd.getDroppedLettersConfig(lastDraggedItem, droppedLetters, to, this.validWord, this.wrongAttempt, callbacks);
       this.wrongAttempt = letterConfig.wrongAttempt || this.wrongAttempt;

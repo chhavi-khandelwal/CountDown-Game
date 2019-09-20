@@ -61,7 +61,7 @@ export const dnd = {
       }
     }
 
-    const currentDroppedLetter = { name: lastDraggedItem.name, from: lastDraggedItem.position, to , isCorrect };
+    const currentDroppedLetter = { name: lastDraggedItem.name, from: lastDraggedItem.position, to, isCorrect };
     if (!isNaN(currentDroppedLetter.to)) {
       droppedLetters[currentDroppedLetter.to] = currentDroppedLetter;
     }
@@ -76,7 +76,7 @@ export const dnd = {
 
     //logic for correct word completion
     const word = dnd.getDroppedLettersWord(droppedLetters, delimiter);
-    if (word.length === validWord.length) {
+    if (word.length === validWord.length && word === validWord) {
       callbacks.updateScore();
       callbacks.stopGame(GameStatus.PASS);
       notification = NotificationEnum.SUCCESS;

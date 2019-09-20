@@ -1,29 +1,33 @@
-## Available Scripts
+## Description
+​Countdown​ game build in ReactJs.
+One can create the word from given collection of words by drag and drop.
 
-In the project directory, you can run:
+## Demo Link
+[https://countdownalph.herokuapp.com/](https://countdownalph.herokuapp.com/)
 
-### `npm install`
-
+## Setup
+ - `npm install`
 To install dependencies
 
-### `npm start`
-
+ - `npm start`
 Runs the app in the development mode.<br>
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-### `npm test`
+ - `npm test`
 To run tests
 
-## Features:
-1. Derive a word from a jumbled collection of 9 letters.
-2. A sound button to toggle the sound effects while playing. Sound effects:
+## How to play:
+1. Click on start button.
+2. Start creating word from jumbled letters.
+3. Word to be created is of length < jumbled letters, has to be dropped in the empty containers by dragging from filled containers.
+4. Each correct word adds up to score.
+5. A sound button to toggle the sound effects while playing. Sound effects:
   - When one fails
   - When one wins
   - Clock ticking sound
-3. Update score on every win
+6. Click on Next/Try Again button for next query.
 
-## Hierarchy of components/containers
-
+## Directory Structure of components/containers
           App
            |
            Dashboard
@@ -33,7 +37,7 @@ To run tests
                 GameBoard
                     |
                   Audio | Notification | PickListContainer | ParcelListContainer | Clock | Result
-                                                |                  |
+                                              |                     |
                                             PickList             ParcelList
                                               |                     |
                                               |________Card_________|
@@ -51,17 +55,22 @@ Each folder contains a jsx file for rendering and a scss file for styling + test
  - Clock is made in pure HTML/CSS
  - Additional Feature of Score is added
  - Sound on wrong attempt, clock ticking and cheer on correct attempt added ( turn on the system volume :) )
- - Added unit tests for WordService, Clock Component
+ - Covered tests for main business logic : WordService, Clock Component, dnd service(drag and drop)
  - Game deployed on herokuapp - [https://countdownalph.herokuapp.com/](https://countdownalph.herokuapp.com/)
 
 ## Improvements:
 - Logic for onDrag/onDrop to be moved to Pick and Parcel Containers
 - Add end to end tests/ unit for left components
-- Dictionary can have image based hints key associated with a word dictionary = [{word: 'bat', hints: []}, ...]
+
 - To add support for mobile by adding touch events
 - Save game state in localstorage for persistence
 - Typescript missing
 - image pre-caching
+- Use of store(redux based system)
+
+## Future feature additions
+- Dictionary can have image based hints key associated with a word dictionary = [{jumbledword:word: ['bat'], hints: []}, ...]
+- can have bonus points on difficult words(based on length)
 
 ## Assumptions
 - Only one word can be created from the collection of letters

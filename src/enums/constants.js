@@ -3,3 +3,7 @@ export const wrongAttemptThreshold = 3;
 export const delimiter = '_';
 export const clockTimer = 60;
 export const cardOpacity = 0.7;
+export const btnText = {
+  NEXT: 'Next',
+  TRYAGAIN: 'Try Again'
+};
